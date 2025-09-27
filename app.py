@@ -40,10 +40,11 @@ docsearch = PineconeVectorStore.from_existing_index(
 retriever = docsearch.as_retriever(search_type="similarity", search_kwargs={"k": 3})
 
 chat = ChatOpenAI(
-    model="gpt-4o-mini",  # ✅ Correct OpenRouter model ID
-    api_key="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",
+    model="gpt-4o-mini",
+    api_key=os.getenv("OPENROUTER_API_KEY"),
     base_url="https://openrouter.ai/api/v1"
 )
+
 
 # Create RAG chain
 question_answer_chain = create_stuff_documents_chain(chat, prompt)
@@ -69,4 +70,6 @@ def chat_route():
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=8080, debug=True, use_reloader=False)
+    # Runs only on your local machine
+    app.run(host="127.0.0.1", port=8080, debug=True, use_reloader=False)
+
