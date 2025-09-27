@@ -1,48 +1,35 @@
 import os
-from dotenv import load_dotenv
 import requests
+from dotenv import load_dotenv
 
-# Load environment variables
+# Load API key from .env
 load_dotenv()
+api_key = os.getenv("OPENROUTER_API_KEY")
 
-# Get API key
-OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
+if not api_key:
+    raise ValueError("OPENROUTER_API_KEY not found in .env")
 
-print(f"API Key: {OPENROUTER_API_KEY[:15] if OPENROUTER_API_KEY else 'None'}...")
-
-if not OPENROUTER_API_KEY:
-    print("❌ No API key found!")
-    exit()
-
-# Test the key
+# Headers
 headers = {
-    "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-    "Content-Type": "application/json",
-    "HTTP-Referer": "http://localhost:8080",
-    "X-Title": "Business Chatbot"
+    "Authorization": f"Bearer {api_key}",
+    "Content-Type": "application/json"
 }
 
+# Payload
 data = {
     "model": "gpt-4o-mini",
-    "messages": [{"role": "user", "content": "Hello"}],
-    "max_tokens": 50
+    "messages": [
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "Hello, who are you?"}
+    ]
 }
 
-try:
-    response = requests.post(
-        "https://openrouter.ai/api/v1/chat/completions",
-        headers=headers,
-        json=data,
-        timeout=30
-    )
-    
-    print(f"Status: {response.status_code}")
-    print(f"Response: {response.text[:200]}")
-    
-    if response.status_code == 200:
-        print("✅ OpenRouter API key works!")
-    else:
-        print("❌ API key issue")
-        
-except Exception as e:
-    print(f"❌ Network error: {e}")
+# API request
+response = requests.post(
+    "https://openrouter.ai/api/v1/chat/completions",
+    headers=headers,
+    json=data
+)
+
+# Print response
+print(response.json())
