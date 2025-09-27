@@ -41,7 +41,7 @@ retriever = docsearch.as_retriever(search_type="similarity", search_kwargs={"k":
 
 chat = ChatOpenAI(
     model="gpt-4o-mini",  # ✅ Correct OpenRouter model ID
-    api_key=OPENROUTER_API_KEY,
+    api_key="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",
     base_url="https://openrouter.ai/api/v1"
 )
 
